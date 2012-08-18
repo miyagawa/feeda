@@ -67,6 +67,7 @@ module Feeda
           entry.instance_eval(options[:eval])
         end
       end
+      remote.save
     end
   end
 
