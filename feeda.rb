@@ -55,15 +55,16 @@ module Feeda
   end
 
   class CLI < Thor
-    desc "update URL ACTION", "update feed and run action for each new entry"
+    desc "update URL", "update feed and run action for each new entry"
+    option :eval, :aliases => "-e"
     option :all, :type => :boolean
-    def update(url, action=nil)
+    def update(url)
       remote = Feed.new(url)
       remote.update(options[:all])
-      if action
+      if options[:eval]
         feed = remote.feed
         remote.new_entries.each do |entry|
-          entry.instance_eval(action)
+          entry.instance_eval(options[:eval])
         end
       end
     end
