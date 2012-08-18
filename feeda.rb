@@ -3,7 +3,6 @@ require 'feedzirra'
 require 'pathname'
 require 'digest/sha1'
 require 'thor'
-require 'pry'
 
 module Feeda
   class Feed
