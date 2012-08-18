@@ -11,7 +11,7 @@ module Feeda
     def initialize(url)
       @url = url
       @path = cache_path
-      @first = false
+      @first = true
     end
 
     def cache_path
@@ -25,14 +25,13 @@ module Feeda
     end
 
     def update(all)
-      all ? fetch : (restore_and_update || fetch)
-    end
-
-    def restore_and_update
-      if @path.exist?
-        old = Marshal.load(File.read(@path))
-        @feed = Feedzirra::Feed.fetch_and_parse(@url)
-        @new_entries = @feed.entries.select {|entry| entry.published > old.entries.first.published }
+      @feed = Feedzirra::Feed.fetch_and_parse(@url)
+      @new_entries = @feed.entries
+      if @path.exist? && !all
+        @first = false
+        cache = Marshal.load(File.read(@path))
+        # don't use select! because that will break the cache
+        @new_entries = @new_entries.select {|entry| entry.published > cache.entries.first.published }
       end
     end
 
@@ -44,12 +43,6 @@ module Feeda
 
     def first?
       @first
-    end
-
-    def fetch
-      @first = true
-      @feed = Feedzirra::Feed.fetch_and_parse(@url)
-      @new_entries = @feed.entries
     end
   end
 
