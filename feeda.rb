@@ -6,7 +6,7 @@ require 'thor'
 
 module Feeda
   class Feed
-    attr_accessor :feed
+    attr_accessor :feed, :new_entries
 
     def initialize(url)
       @url = url
@@ -25,12 +25,14 @@ module Feeda
     end
 
     def update(all)
-      @feed = all ? fetch : (restore || fetch)
+      all ? fetch : (restore_and_update || fetch)
     end
 
-    def restore
+    def restore_and_update
       if @path.exist?
-        @feed = Marshal.load(File.read(@path))
+        old = Marshal.load(File.read(@path))
+        @feed = Feedzirra::Feed.fetch_and_parse(@url)
+        @new_entries = @feed.entries.select {|entry| entry.published > old.entries.first.published }
       end
     end
 
@@ -46,11 +48,8 @@ module Feeda
 
     def fetch
       @first = true
-      Feedzirra::Feed.fetch_and_parse(@url)
-    end
-
-    def new_entries
-      first? ? @feed.entries : @feed.new_entries
+      @feed = Feedzirra::Feed.fetch_and_parse(@url)
+      @new_entries = @feed.entries
     end
   end
 
