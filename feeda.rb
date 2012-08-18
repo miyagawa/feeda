@@ -49,13 +49,15 @@ module Feeda
   class CLI < Thor
     desc "update URL", "update feed and run action for each new entry"
     option :eval, :aliases => "-e"
+    option :first, :type => :numeric
     option :all, :type => :boolean
     def update(url)
       remote = Feed.new(url)
       remote.update(options[:all])
       if options[:eval]
         feed = remote.feed
-        remote.new_entries.each do |entry|
+        entries = options[:first] ? remote.new_entries.first(options[:first]) : remote.new_entries
+        entries.each do |entry|
           entry.instance_eval(options[:eval])
         end
       end
