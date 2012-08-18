@@ -7,7 +7,13 @@ feeda is a CLI tool to run actions on feed entries. Feed update is cached and th
 Print title of new entries:
 
 ```
-bundle exec ./feeda.rb http://example.com/feed 'puts title'
+./feeda.rb http://example.com/feed 'puts title'
+```
+
+You can access feed elements too:
+
+```
+./feeda.rb http://example.com/feed 'puts [feed.title, entry.title].join(" - ")'
 ```
 
 Print enclosure URL of new entries. Force all entries not just new entries:

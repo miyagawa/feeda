@@ -7,6 +7,8 @@ require 'pry'
 
 module Feeda
   class Feed
+    attr_accessor :feed
+
     def initialize(url)
       @url = url
       @path = cache_path
@@ -57,10 +59,11 @@ module Feeda
     desc "update URL ACTION", "update feed and run action for each new entry"
     option :all, :type => :boolean
     def update(url, action=nil)
-      feed = Feed.new(url)
-      feed.update(options[:all])
+      remote = Feed.new(url)
+      remote.update(options[:all])
       if action
-        feed.new_entries.each do |entry|
+        feed = remote.feed
+        remote.new_entries.each do |entry|
           entry.instance_eval(action)
         end
       end
