@@ -3,6 +3,7 @@ require 'feedzirra'
 require 'pathname'
 require 'digest/sha1'
 require 'thor'
+require 'htmlentities'
 
 module Feeda
   class Feed
@@ -70,7 +71,11 @@ module Feeda
       base.class_eval do
         element :enclosure, :value => :length, :as => :enclosure_length
         element :enclosure, :value => :type, :as => :enclosure_type
-        element :enclosure, :value => :url, :as => :enclosure_url
+        element :enclosure, :value => :url, :as => :enclosure_url_original
+
+        def enclosure_url
+          HTMLEntities.new.decode(enclosure_url_original)
+        end
       end
     end
   end
