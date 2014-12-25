@@ -1,6 +1,6 @@
 source 'https://rubygems.org/'
 
-gem 'feedzirra'
+gem 'feedjira'
 gem 'sequel'
 gem 'thor'
 gem 'htmlentities'
