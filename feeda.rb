@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-require 'feedjira'
+require 'feedzirra'
 require 'pathname'
 require 'digest/sha1'
 require 'thor'
@@ -26,7 +26,7 @@ module Feeda
     end
 
     def update(all)
-      @feed = Feedjira::Feed.fetch_and_parse(@url)
+      @feed = Feedzirra::Feed.fetch_and_parse(@url)
       @new_entries = @feed.entries
       if @path.exist? && !all
         @first = false
@@ -66,7 +66,7 @@ module Feeda
     end
   end
 
-  module PatchFeedjira
+  module PatchFeedzirra
     def self.included(base)
       base.class_eval do
         element :enclosure, :value => :length, :as => :enclosure_length
@@ -79,7 +79,7 @@ module Feeda
       end
     end
   end
-  Feedjira::Parser::RSSEntry.send :include, PatchFeedjira
+  Feedzirra::Parser::RSSEntry.send :include, PatchFeedzirra
 end
 
 Feeda::CLI.start(ARGV)
